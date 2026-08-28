@@ -79,6 +79,34 @@ N8N_UI_BASE_URL = os.environ.get("N8N_UI_BASE_URL", "").rstrip("/")
 # Examples: "/workflow/{id}", "/workflows/{id}", "/workflow/{id}/canvas"
 N8N_UI_WORKFLOW_PATH_TEMPLATE = os.environ.get("N8N_UI_WORKFLOW_PATH_TEMPLATE", "/workflow/{id}")
 
+# -----------------------------------------------------------------------
+# Consulta de propostas (read-only, feature-flagged)
+# -----------------------------------------------------------------------
+# Off by default: enabling this app cannot change an existing deployment.
+PROPOSALS_ENABLED = env_bool("PROPOSALS_ENABLED", False)
+# "sql" reads the analytical layer over a DB alias; "n8n" proxies a webhook.
+PROPOSALS_SOURCE = os.environ.get("PROPOSALS_SOURCE", "n8n")
+PROPOSALS_DB_ALIAS = os.environ.get("PROPOSALS_DB_ALIAS", "default")
+PROPOSALS_SCHEMA = os.environ.get("PROPOSALS_SCHEMA", "gold")
+# Shared secret for the n8n source. Deliberately NOT reusing N8N_KB_KEY.
+PROPOSALS_N8N_KEY = os.environ.get("PROPOSALS_N8N_KEY", "")
+
+# -----------------------------------------------------------------------
+# Geracao de relatorios (read-only da UI, feature-flagged)
+# -----------------------------------------------------------------------
+REPORTS_ENABLED = env_bool("REPORTS_ENABLED", False)
+# Webhook do workflow n8n que gera o artefato.
+REPORTS_WEBHOOK_URL = os.environ.get("REPORTS_WEBHOOK_URL", "")
+# Base publica deste backend, usada para montar a URL de callback enviada
+# ao n8n. Assim o mesmo workflow serve local, homologacao e producao.
+REPORTS_CALLBACK_BASE = os.environ.get("REPORTS_CALLBACK_BASE", "")
+# Segredo proprio do callback. NAO reaproveitar o N8N_KB_KEY.
+REPORTS_CALLBACK_KEY = os.environ.get("REPORTS_CALLBACK_KEY", "")
+REPORTS_TIMEOUT = int(os.environ.get("REPORTS_TIMEOUT", "30"))
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
+
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_ACCESS_SECRET = os.getenv("AWS_ACCESS_SECRET")
 AWS_REGION = os.getenv("AWS_REGION", "eu-central-1")
@@ -117,6 +145,8 @@ INSTALLED_APPS = [
     "django_filters",
     # Project apps
     "authentication",
+    "proposals",
+    "reports",
 ]
 
 REST_FRAMEWORK = {

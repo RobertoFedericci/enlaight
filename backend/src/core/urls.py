@@ -41,5 +41,7 @@ urlpatterns = [
     path("health/", health),
     path("api/health/", health),
     path("api/", include("authentication.urls")),
+    path("api/proposals/", include("proposals.urls")),
+    path("api/reports/", include("reports.urls")),
     path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
 ]

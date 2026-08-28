@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import { LayoutDashboard, Settings } from 'lucide-react';
+import { FileSearch, LayoutDashboard, Settings } from 'lucide-react';
 import { EnlaightBot, FavoriteChat, Logout, SearchChat, StartChat } from '@/assets/svgs';
 
 export const getMenuItems = (activeItem: string, t: TFunction) => {
@@ -37,6 +37,15 @@ export const getMenuItems = (activeItem: string, t: TFunction) => {
       disabled: false,
       icon: (
         <SearchChat size={20} className={`group-hover:text-brand-yellow ${activeItem === "search-chat" ? "text-brand-yellow" : "text-white"}`} fill="currentColor" />
+      )
+    },
+    {
+      id: "proposals-query",
+      label: t('navigation.proposalsQuery'),
+      isActive: activeItem === "proposals-query",
+      disabled: false,
+      icon: (
+        <FileSearch size={18} className={`group-hover:text-brand-yellow ${activeItem === "proposals-query" ? "text-brand-yellow" : "text-white"}`} />
       )
     },
     {

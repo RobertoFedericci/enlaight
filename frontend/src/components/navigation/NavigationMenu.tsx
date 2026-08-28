@@ -101,6 +101,10 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({ isCollapsed = fa
       navigate("/knowledgebases");
     }
 
+    if (itemId === "proposals-query") {
+      navigate("/consulta-propostas");
+    }
+
     if (itemId === "invite") {
       setInviteModalOpen(true);
       return;
