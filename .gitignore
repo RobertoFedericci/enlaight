@@ -29,3 +29,4 @@ postgres/data/
 .claude
 
 *.DS_Store
+backend/src/media/

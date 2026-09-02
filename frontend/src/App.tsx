@@ -31,6 +31,7 @@ import ClientManagement from "./pages/ClientManagement";
 import SearchPage from "./pages/SearchPage";
 import Favorites from "./pages/Favorites";
 import DashboardPage from "./pages/DashboardPage";
+import ProposalsQuery from "./pages/ProposalsQuery";
 
 function MobileGlobalSidebar() {
   const { isSidebarOpen, closeSidebar } = useSidebar();
@@ -149,6 +150,15 @@ const App = () => {
                         element={
                           <RequireAuth>
                             <KnowledgeBases />
+                          </RequireAuth>
+                        }
+                      />
+
+                      <Route
+                        path="/consulta-propostas"
+                        element={
+                          <RequireAuth>
+                            <ProposalsQuery />
                           </RequireAuth>
                         }
                       />
