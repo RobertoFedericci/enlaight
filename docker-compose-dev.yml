@@ -128,6 +128,9 @@ services:
       - "${N8N_BIND_HOST:-127.0.0.1}:5678:5678"
     environment:
       - NODE_ENV=development
+      # jszip: exigido pelo nó "Renderizar DOCX" do workflow de relatório
+      # (require('jszip')). O n8n não lê o .env; a var vai aqui no serviço.
+      - NODE_FUNCTION_ALLOW_EXTERNAL=jszip
       - N8N_HOST=localhost
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
