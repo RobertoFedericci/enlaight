@@ -90,6 +90,7 @@ PROPOSALS_DB_ALIAS = os.environ.get("PROPOSALS_DB_ALIAS", "default")
 PROPOSALS_SCHEMA = os.environ.get("PROPOSALS_SCHEMA", "gold")
 # Shared secret for the n8n source. Deliberately NOT reusing N8N_KB_KEY.
 PROPOSALS_N8N_KEY = os.environ.get("PROPOSALS_N8N_KEY", "")
+PROPOSALS_N8N_URL = os.environ.get("PROPOSALS_N8N_URL", "")
 
 # -----------------------------------------------------------------------
 # Geracao de relatorios (read-only da UI, feature-flagged)

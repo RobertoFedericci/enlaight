@@ -248,20 +248,22 @@ class SqlProposalSource(BaseProposalSource):
 
 
 class N8nProposalSource(BaseProposalSource):
-    """Proxies to an n8n webhook, mirroring the /api/kb/* views."""
+    """Proxies to a single consolidated n8n webhook that queries the gold layer
+    via Metabase. One endpoint, dispatched by an ``action`` field, so the
+    Metabase login (and its secret) lives in exactly one workflow."""
 
-    def _call(self, path: str, payload: Dict[str, Any]) -> Any:
-        base = getattr(settings, "N8N_BASE_URL", "")
+    def _call(self, action, extra=None):
+        url = getattr(settings, "PROPOSALS_N8N_URL", "")
         key = getattr(settings, "PROPOSALS_N8N_KEY", "") or getattr(settings, "N8N_KB_KEY", "")
-        if not base or not key:
+        if not url or not key:
             raise ProposalSourceError(
-                "Configuração do n8n ausente (N8N_BASE_URL / PROPOSALS_N8N_KEY)."
+                "Configuração do n8n ausente (PROPOSALS_N8N_URL / PROPOSALS_N8N_KEY)."
             )
+        payload = {"action": action, **(extra or {})}
         timeout = int(getattr(settings, "N8N_TIMEOUT", 30))
         try:
             r = requests.post(
-                f"{base}{path}",
-                json=payload,
+                url, json=payload,
                 headers={"key": key, "Content-Type": "application/json"},
                 timeout=timeout,
             )
@@ -277,19 +279,19 @@ class N8nProposalSource(BaseProposalSource):
             raise ProposalSourceError("Fonte de dados devolveu resposta inválida.") from exc
 
     def list_processes(self, **kw):
-        return self._call("/webhook/proposals/processes", kw)
+        return self._call("processes", kw)
 
-    def list_components(self, process_id: int):
-        return self._call("/webhook/proposals/components", {"process_id": process_id})
+    def list_components(self, process_id):
+        return self._call("components", {"process_id": process_id}).get("results", [])
 
     def list_proposals(self, **kw):
-        return self._call("/webhook/proposals/search", kw)
+        return self._call("search", kw)
 
     def facets(self, **kw):
-        return self._call("/webhook/proposals/facets", kw)
+        return self._call("facets", kw)
 
     def iter_proposals_for_export(self, **kw):
-        data = self._call("/webhook/proposals/search", {**kw, "page": 1, "page_size": EXPORT_MAX_ROWS})
+        data = self._call("search", {**kw, "page": 1, "page_size": EXPORT_MAX_ROWS})
         rows = data.get("results", [])
         if not rows:
             yield []
