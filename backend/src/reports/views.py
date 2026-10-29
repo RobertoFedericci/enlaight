@@ -49,9 +49,15 @@ def _expire_if_stale(job):
 
 def _fire_webhook(job_id, payload, url, timeout):
     """Runs off the request thread. The webhook answers immediately
-    (responseMode: onReceived), so this only needs to survive the handshake."""
+    (responseMode: onReceived), so this only needs to survive the handshake.
+
+    The same shared secret that authenticates the callback goes out in the
+    `key` header, so the workflow's webhook can reject calls that did not come
+    from this backend."""
+    key = getattr(settings, "REPORTS_CALLBACK_KEY", "")
+    headers = {"key": key} if key else {}
     try:
-        r = requests.post(url, json=payload, timeout=timeout)
+        r = requests.post(url, json=payload, headers=headers, timeout=timeout)
         r.raise_for_status()
     except Exception as exc:  # noqa: BLE001 - any failure marks the job failed
         logger.exception("report job %s: webhook failed", job_id)
